@@ -1,0 +1,42 @@
+- name: backup-server
+  hosts: backup
+  become: yes
+  tasks:
+
+# Установим borgbackup
+  - name: install borgbackup
+    apt:
+      name: 
+        - borgbackup
+      state: present
+      update_cache: yes
+
+# Создадим группу 'borg'
+  - name: Add the user 'borg'
+    group:
+      name: borg
+      state: present
+
+# Создадим пользователя 'borg'
+  - name: Add the user 'borg'
+    user:
+      name: borg
+      group: borg
+
+# Создадим директорию '/var/backup'
+  - name: Create directory '/var/backup'
+    file:
+      path: /var/backup
+      owner: borg
+      group: borg
+      mode: '0700'
+      state: directory
+
+# Создадим директорию '/home/borg/.ssh'
+  - name: Create directory '/home/borg/.ssh'
+    file:
+      path: /home/borg/.ssh
+      owner: borg
+      group: borg
+      mode: '0700'
+      state: directory
